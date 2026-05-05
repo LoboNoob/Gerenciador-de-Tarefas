@@ -1,1 +1,54 @@
+from plyer import notification
+from datetime import datetime
+import time
 
+lembretes = []
+
+while True:
+    print("----Gerenciador de Tarefas----")
+    print("Escolha uma opção:")
+    print("1- Criar um Lembrete")
+    print("2- Acessar lembretes")
+    print("3- Sair")
+    opc = int(input(""))
+    if opc == 1:
+        while True: #Criando os lembretes
+            titulo = input("Título do lembrete: ")
+            data = input("Data (DD/MM/AAAA): ")
+            hora = input("Hora (HH:MM): ")
+            
+            data_hora = datetime.strptime(f"{data} {hora}", "%d/%m/%Y %H:%M")
+            
+            lembrete = {
+                "titulo": titulo,
+                "data_hora": data_hora
+            }
+            
+            lembretes.append(lembrete)
+            print("Lembrete salvo!")
+            sair = input("Quer adicionar outro? (s/n): ")
+            if sair.lower() == "n":
+                break
+    
+    elif opc == 2:
+        for l in lembretes:
+            print(f"{l['titulo']} - {l['data_hora']}")
+    elif opc == 3:
+        break
+    else:
+        print("Opção Invalida!")
+
+#loop para verificar se deu o horario e a data certa 'eu acho que ta certo'
+while True:
+    agora = datetime.now()
+    
+    for lembrete in lembretes:
+        if agora >= lembrete["data_hora"]:
+            notification.notify(
+                title=lembrete["titulo"],
+                message="Hora do seu lembrete!",
+                timeout=5
+            )
+            lembretes.remove(lembrete)  # remove depois de notificar
+    
+    time.sleep(1)
